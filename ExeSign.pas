@@ -48,8 +48,13 @@ begin
     ResourcePointer := LockResource(ResourceHandle);
     if ResourcePointer <> nil then
     begin
-      SetLength(Result, ResourceSize - 1);
-      CopyMemory(@Result[1], ResourcePointer, ResourceSize);
+      // ResourceSize is in bytes and includes the null terminator
+      // written by WriteSignature, so convert to chars and drop it.
+      if ResourceSize >= SizeOf(Char) then
+        SetString(Result, PChar(ResourcePointer),
+          ResourceSize div SizeOf(Char) - 1)
+      else
+        Result := '';
       FreeResource(ResourceHandle);
     end
     else
@@ -80,8 +85,13 @@ begin
     ResourcePointer := LockResource(ResourceHandle);
     if ResourcePointer <> nil then
     begin
-      SetLength(Result, ResourceSize - 1);
-      CopyMemory(@Result[1], ResourcePointer, ResourceSize);
+      // ResourceSize is in bytes and includes the null terminator
+      // written by WriteSignature, so convert to chars and drop it.
+      if ResourceSize >= SizeOf(Char) then
+        SetString(Result, PChar(ResourcePointer),
+          ResourceSize div SizeOf(Char) - 1)
+      else
+        Result := '';
       FreeResource(ResourceHandle);
     end
     else
